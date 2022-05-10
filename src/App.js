@@ -3,6 +3,7 @@ import {
   getAuth,
   signInWithPopup,
   GithubAuthProvider,
+  signOut,
 } from "firebase/auth";
 import { useState } from "react";
 import firebaseApp from "./components/firebase/Firebase";
@@ -31,21 +32,35 @@ function App() {
   const handlegithubAuth = () => {
     signInWithPopup(auth, gitHubProvider)
       .then((result) => {
-        const user = result.user;
-        setUsers(user);
+        const gitUser = result.user;
+        setUsers(gitUser);
 
-        // ...
+        console.log(gitUser);
       })
       .catch((error) => {
         console.log(error);
-        // ...
+      });
+  };
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        setUsers({});
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
   return (
     <div>
       <div> {users.email}</div>
+      <div>
+        {" "}
+        i am from github: <img src={users.photoURL} alt="i" />
+      </div>
       <button onClick={handleAuth}>click</button>
       <button onClick={handlegithubAuth}>click</button>
+      <button onClick={handleSignOut}> signOut</button>
     </div>
   );
 }
