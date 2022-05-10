@@ -8,7 +8,7 @@ import { useState } from "react";
 import firebaseApp from "./components/firebase/Firebase";
 firebaseApp();
 const googleProvider = new GoogleAuthProvider();
-const gitHubProvider = new GoogleAuthProvider();
+const gitHubProvider = new GithubAuthProvider();
 const auth = getAuth();
 // firebass app
 
