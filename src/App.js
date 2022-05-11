@@ -5,7 +5,7 @@ import {
   signInWithPopup,
   GithubAuthProvider,
   signOut,
-  createUserWithEmailAndPassword 
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { useState } from "react";
 
@@ -20,6 +20,7 @@ function App() {
   const [users, setUsers] = useState({});
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const handleAuth = () => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
@@ -70,21 +71,30 @@ function App() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    if (password.length < 6) {
+      setError(
+        "errorCode is  auth/weak-password Firebase: Password should be at least 6 characters (auth/weak-password)."
+      );
+      return;
+    }
     createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // ..
-  });
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setError(errorMessage);
+        // ..
+      });
   };
   return (
     <div>
       <div>
+        <span className="text-center text-danger"> The Error, {error}</span>
         <form onSubmit={handleFormSubmit}>
           <div className="form-group">
             <label htmlFor="exampleInputEmail1">Email address</label>
