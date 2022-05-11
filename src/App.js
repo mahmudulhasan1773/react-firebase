@@ -5,6 +5,7 @@ import {
   signInWithPopup,
   GithubAuthProvider,
   signOut,
+  createUserWithEmailAndPassword 
 } from "firebase/auth";
 import { useState } from "react";
 
@@ -17,6 +18,8 @@ const auth = getAuth();
 
 function App() {
   const [users, setUsers] = useState({});
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const handleAuth = () => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
@@ -55,26 +58,39 @@ function App() {
   };
 
   //email
-  const handleEmail = () => {
-    console.log("email");
+  const handleEmail = (e) => {
+    const inputEmail = e.target.value;
+    setEmail(inputEmail);
   };
   //password
-  const handlePassword = () => {
-    console.log("password");
+  const handlePassword = (e) => {
+    const inputPassword = e.target.value;
+    setPassword(inputPassword);
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log("form click");
+    createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+  });
   };
   return (
     <div>
       <div>
         <form onSubmit={handleFormSubmit}>
           <div className="form-group">
-            <label for="exampleInputEmail1">Email address</label>
+            <label htmlFor="exampleInputEmail1">Email address</label>
             <input
-              onChange={handleEmail}
+              required
+              onBlur={handleEmail}
               type="email"
               className="form-control"
               id="exampleInputEmail1"
@@ -86,13 +102,14 @@ function App() {
             </small>
           </div>
           <div className="form-group">
-            <label for="exampleInputPassword1">Password</label>
+            <label htmlFor="exampleInputPassword1">Password</label>
             <input
-              onChange={handlePassword}
+              onBlur={handlePassword}
               type="password"
               className="form-control"
               id="exampleInputPassword1"
               placeholder="Password"
+              required
             />
           </div>
           <div className="form-group form-check">
@@ -101,7 +118,7 @@ function App() {
               className="form-check-input"
               id="exampleCheck1"
             />
-            <label className="form-check-label" for="exampleCheck1">
+            <label className="form-check-label" htmlFor="exampleCheck1">
               Check me out
             </label>
           </div>
