@@ -6,6 +6,8 @@ import {
   GithubAuthProvider,
   signOut,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
 } from "firebase/auth";
 import { useState } from "react";
 
@@ -82,13 +84,30 @@ function App() {
         // Signed in
         const user = userCredential.user;
         console.log(user);
-        // ...
+        sendEmailVerification(auth.currentUser).then((result) => {
+          console.log(result);
+        });
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         setError(errorMessage);
         // ..
+      });
+  };
+
+  //signIn
+  const handleSignIn = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        setError(errorMessage);
       });
   };
   return (
@@ -145,8 +164,9 @@ function App() {
       </div>
 
       <button onClick={handleAuth}>click</button>
-      <button onClick={handlegithubAuth}>click</button>
+      <button onClick={handlegithubAuth}>git hub register</button>
       <button onClick={handleSignOut}> signOut</button>
+      <button onClick={handleSignIn}> signIn</button>
     </div>
   );
 }
